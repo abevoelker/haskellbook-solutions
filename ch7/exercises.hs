@@ -1,5 +1,7 @@
 -- 7.4
 
+-- Exercises: Grab Bag
+
 -- 1.
 -- they are all equivalent thanks to Haskell's automatic currying!
 
@@ -19,7 +21,9 @@ addFive' = \x -> \y -> (if x > y then y else x) + 5
 mflip' f x y = f y x
 
 
--- 7.5
+-- 7.4
+
+-- Exercises: Variety Pack
 
 -- 1.a)
 k :: (a, b) -> a
@@ -36,21 +40,21 @@ f :: (a, b, c) -> (d, e, f) -> ((a, d), (c, f))
 f (a, b, c) (d, e, f) = ((a, d), (c, f))
 
 
--- 7.6
+-- 7.5
+
+-- Exercises: Case Practice
 
 -- 1.
 functionC' x y =
-  case greater of
+  case x > y of
     True -> x
     False -> y
-  where greater = (x > y)
 
 -- 2.
 ifEvenAdd2' n =
-  case isEven of
+  case even n of
     True -> (n + 2)
     False -> n
-  where isEven = (even n)
 
 -- 3.
 nums x =
@@ -60,7 +64,9 @@ nums x =
     EQ -> 0
 
 
--- 7.7
+-- 7.6
+
+-- Exercises: Artful Dodgy
 
 -- 1.
 dodgy :: Num a => a -> a -> a
@@ -99,7 +105,9 @@ oneIsTwo :: Num a => a -> a
 -- 23
 
 
--- 7.8
+-- 7.7
+
+-- Exercises: Guard Duty
 
 -- 1.
 -- the otherwise clause matches anything, so if you put it first, it always
@@ -128,7 +136,7 @@ pal :: Eq a => [a] -> Bool
 numbers :: (Num a, Ord a, Num b) => a -> b
 
 
--- 7.12
+-- 7.11
 
 -- Multiple choice
 
@@ -156,12 +164,14 @@ tensDigit x = d
         (_, d)     = xLast `divMod` 10
 
 -- 1.b)
--- yes...
+-- Yes
 
 -- 1.c)
 hunsD :: Integral a => a -> a
 hunsD x = d
   where d = (x `div` 100) `mod` 10
+-- or, pointfree:
+hunsD = (`mod` 10) . (`div` 100)
 
 -- 2.
 foldBool :: a -> a -> Bool -> a
