@@ -1,5 +1,7 @@
 -- 8.2
 
+-- Intermission: Exercise
+
 --   applyTimes 5 (+1) 5
 -- = (+1) (applyTimes 4 (+1) 5)
 -- = (+1) ((+1) (applyTimes 3 (+1) 5))
@@ -71,23 +73,24 @@ sumUpTo max = go max 0 0 where
     | otherwise = go m (carry + i) (i + 1)
 
 -- 3.
-flipIfOneNeg :: (Num a, Ord a) => (a, a) -> a -> a
-flipIfOneNeg (x, y) z = if ((length . filter (\x -> x < 0) $ [x, y]) == 1) then (-z) else z
-
-mult :: (Eq a, Ord a, Num a) => a -> a -> a
-mult x y = go x' y' 0 where
-  x' = abs(x)
-  y' = abs(y)
-  go n i carry
-    | i == 0 = flipIfOneNeg (x, y) carry
-    | otherwise = go n (i - 1) (carry + n)
+mult :: (Integral a) => a -> a -> a
+mult x y = go x y 0 where
+  go x' remainingCount accum
+    | remainingCount == 0 = accum
+    | otherwise = go x' (remainingCount - 1) (accum + x')
 
 -- Fixing dividedBy
 
 data DividedResult =
-  Result (Integer, Integer)
+  Result Integer
   | DividedByZero
   deriving Show
+
+xor :: Bool -> Bool -> Bool
+xor True True = False
+xor True False = True
+xor False True = True
+xor False False = False
 
 dividedBy' :: Integer -> Integer -> DividedResult
 dividedBy' num denom
@@ -95,14 +98,22 @@ dividedBy' num denom
   | otherwise = go num' denom' 0 where
     num' = abs(num)
     denom' = abs(denom)
+    negativeResult = (num < 0) `xor` (denom < 0)
     go n d count
-      | n < d = Result (flipIfOneNeg (num, denom) count, n)
+      | n < d = Result (if negativeResult then (-count) else count)
       | otherwise = go (n - d) d (count + 1)
+
 
 -- McCarthy 91 function
 
 mc91 :: (Num a, Ord a) => a -> a
 mc91 x = if (x > 100) then (x - 10) else mc91(mc91(x + 11))
+
+-- or, with guards:
+
+mc91 x
+  | x > 100   = x - 10
+  | otherwise = (mc91 . mc91 . (+ 11)) x
 
 -- Numbers into words
 -- see wordnumber.hs

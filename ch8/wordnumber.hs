@@ -20,4 +20,4 @@ digits n
   | otherwise = digits(n `div` 10) ++ [n `mod` 10]
 
 wordNumber :: Int -> String
-wordNumber n = concat $ intersperse "-" $ map digitToWord $ digits(n)
+wordNumber = concat . (intersperse "-") . (map digitToWord) . digits
