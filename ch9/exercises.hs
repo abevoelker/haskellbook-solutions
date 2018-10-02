@@ -1,10 +1,14 @@
 -- 9.3
+
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
 safeHead (x:_) = Just x
 
+-- 9.5
 
--- 9.4
+
+-- Exercise: EnumFromTo
+
 eftBool :: Bool -> Bool -> [Bool]
 eftBool x y
   | x > y = []
@@ -24,19 +28,18 @@ eftInt x y
   | otherwise = x : (eftInt (succ x) y)
 
 eftChar :: Char -> Char -> [Char]
-eftInt x y
+eftChar x y
   | x > y = []
   | x == y = [x]
   | otherwise = x : (eftChar (succ x) y)
 
 
--- 9.5
+-- 9.6
 
 -- Q: In the final example above, why does it only return a single a?
--- A: Because the first Char matches the condition, but the second does not.
+-- A: It actually returns a list, ['a'], but that is equivalent to "a"
 
-
--- 9.6
+-- Exercises: Thy Fearful Symmetry
 
 -- 1)
 
@@ -71,6 +74,34 @@ myLines' x = mySplit '\n' x
 
 -- 9.7
 
+-- Exercises: Comprehend Thy Lists
+
+-- It will output all even mySqr numbers:
+-- Prelude> [x | x <- mySqr, rem x 2 == 0]
+-- [4,16,36,64,100]
+
+-- Prelude> :{
+-- Prelude| [(x, y) | x <- mySqr,
+-- Prelude|           y <- mySqr,
+-- Prelude|           x < 50, y > 50]
+-- Prelude| :}
+-- [(1,64),(1,81),(1,100),(4,64),(4,81),(4,100),(9,64),(9,81),(9,100),(16,64),(16,81),(16,100),(25,64),(25,81),(25,100),(36,64),(36,81),(36,100),(49,64),(49,81),(49,100)]
+
+-- Prelude> :{
+-- Prelude| take 5 [ (x, y) | x <- mySqr,
+-- Prelude|                   y <- mySqr,
+-- Prelude|                   x < 50, y > 50]
+-- Prelude| :}
+-- [(1,64),(1,81),(1,100),(4,64),(4,81)]
+
+-- List comprehensions with Strings
+
+-- Q: Given the above, what do you think this function would do:
+--    Prelude> let myString xs = [x | x <- xs, elem x "aeiou"]
+-- A: It returns only the lowercase vowels in the string it's applied to
+
+-- Exercises: Square Cube
+
 -- 1)
 [(x,y) | x <- mySqr, y <- myCube]
 
@@ -83,13 +114,15 @@ length [(x,y) | x <- mySqr, y <- myCube, x < 50, y < 50]
 
 -- 9.8
 
+-- Exercises: Bottom Madness
+
 -- Will it blow up?
 
 -- 1) Returns a value (it only blows up if you try to print it)
 
 -- 2) Returns a value: [1]
 
--- 3) Blows up since sum evaluates over values
+-- 3) Blows up since sum forces values
 
 -- 4) Returns a value since length only walks the spine
 
@@ -110,9 +143,6 @@ length [(x,y) | x <- mySqr, y <- myCube, x < 50, y < 50]
 
 -- Intermission: Is it in normal form?
 
--- Note: I'm mainly guessing here because I don't think this WHNF/NF stuff was
--- explained very well at this point to be doing these questions
-
 -- 1) NF
 
 -- 2) WHNF
@@ -123,21 +153,24 @@ length [(x,y) | x <- mySqr, y <- myCube, x < 50, y < 50]
 
 -- 5) WHNF
 
--- 6) Neither?
+-- 6) Neither
 
 -- 7) WHNF
 
 
 -- 9.9
 
+-- Exercises: More Bottoms
+
 -- 1) Bottom
 
--- 2) 2
+-- 2) [2]
 
 -- 3) Bottom
 
 -- 4) The inner lambda returns True or False if the given Char is in the list "aeiou".
---    The addition of `map` means it apply it to a [Char] i.e. a String.
+--    Applying it with `map` to a String gives you a list of Bool corresponding to
+--    whether each Char in the String is a vowel ("aeiou") or not
 --    Its type is: itIsMystery :: String -> [Bool]
 
 -- 5a)
@@ -185,7 +218,7 @@ zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
 
 -- 3)
 zip'' :: [a] -> [b] -> [(a, b)]
-zip'' xs ys = zipWith' (,) xs ys
+zip'' = zipWith' (,)
 
 
 -- 9.12
@@ -210,6 +243,9 @@ capitalize (x:xs) = (toUpper x) : xs
 allCaps :: String -> String
 allCaps "" = ""
 allCaps (x:xs) = (toUpper x) : allCaps xs
+
+-- although a simpler version using HOFs would just be:
+allCaps = map toUpper
 
 -- 5)
 firstLetterUpper :: String -> Char
@@ -259,7 +295,7 @@ squish (x:xs) = x ++ squish xs
 -- 6)
 squishMap :: (a -> [b]) -> [a] -> [b]
 squishMap _ [] = []
-squishMap f xs = squish (map f xs)
+squishMap f (x:xs) = (f x) ++ (squishMap f xs)
 
 -- 7)
 squishAgain :: [[a]] -> [a]
