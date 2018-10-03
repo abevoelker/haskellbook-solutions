@@ -2,7 +2,7 @@
 
 -- Undertanding Folds
 
--- 1) b
+-- 1) b and c
 
 -- 2)
 
@@ -26,26 +26,40 @@ foldr max '\NUL' "fear is the little death"
 foldr (&&) True [False, True]
 
 -- 5) d)
--- No, because True or'ed with anything will always be true, and the accumulator is True
+-- No, the zero/identity being True will always short-circuit (||) to
+-- return True regardless of other arguments. Replace with False to fix:
+foldr (||) False [False, True]
 
 -- 5) e)
 foldr ((++) . show) "" [1..5]
+-- or
+foldl (flip $ (++) . show) "" [1..5]
 
 -- 5) f)
+foldl const 'a' [1..5]
+-- or
+foldr (flip const) 'a' [1..5]
+-- or
 foldr const 'a' ['1'..'5']
 
 -- 5) g)
-foldr const '0' "tacos"
--- or?
 foldl const 0 "tacos"
+-- or
+foldr (flip const) 0 "tacos"
+-- or
+foldr const '0' "tacos"
 
 -- 5) h)
-foldl (flip const) '0' "burritos"
--- or?
+foldl const 0 "burritos"
+-- or
 foldr (flip const) 0 "burritos"
+-- or
+foldl (flip const) '0' "burritos"
 
 -- 5) i)
 foldr (flip const) 'z' [1..5]
+-- or
+foldl const 'z' [1..5]
 
 
 -- 10.6
@@ -75,11 +89,13 @@ avgDb = (\x -> (fst x) / (snd x)) . (foldr (\ a b -> case a of {DbNumber x -> ((
 
 -- 10.9
 
+-- Scans Exercises
+
 -- 1)
 fibs' = take 20 $ 1 : scanl (+) 1 fibs'
 
 -- 2)
-fibs'' = takeWhile (\x -> x < 100) $ 1 : scanl (+) 1 fibs''
+fibs'' = takeWhile (<100) $ 1 : scanl (+) 1 fibs''
 
 -- 3)
 factorial' = scanl (*) 1 [1..]
