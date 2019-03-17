@@ -375,6 +375,20 @@ coolestWord x = fst (maximumBy (comparing snd) wordCounts) where
 -- > coolestWord convo
 -- "Lol"
 
+-- Hutton’s Razor
+
+-- 1)
+
+eval :: Expr -> Integer
+eval (Lit x) = x
+eval (Add x y) = (eval x) + (eval y)
+
+-- 2)
+
+printExpr :: Expr -> String
+printExpr (Lit x) = show x
+printExpr (Add x y) = (printExpr x) ++ " + " ++ (printExpr y)
+
 
 -- DEPRECATED
 -- These exercises appeared in previous versions of the book, but no longer
