@@ -337,6 +337,44 @@ capitalizeParagraph x = unwords $ go (words x) True where
     where
       capNextWord = (last x == '.')
 
+-- Phone exercise
+
+-- 1) See phone.hs
+
+-- 2)
+
+cellPhonesDead :: DaPhone -> String -> [(Digit, Presses)]
+cellPhonesDead x y = concat $ map (reverseTaps x) y
+
+-- 3)
+
+fingerTaps :: [(Digit, Presses)] -> Presses
+fingerTaps x = sum (map snd x)
+
+-- 4)
+
+mostPopularLetter :: String -> Char
+mostPopularLetter x = fst (maximumBy (comparing snd) letterCounts) where
+  letterCounts = map (\x' -> (head x', length x')) $ group $ sort x
+
+mostPopularLetterCosts = map (\x -> (x, (fingerTaps $ (reverseTaps defaultPhone x)))) (map mostPopularLetter convo)
+
+-- 5)
+
+coolestLtr :: [String] -> Char
+coolestLtr = mostPopularLetter . concat
+
+-- > coolestLtr convo
+-- ' '
+
+coolestWord :: [String] -> String
+coolestWord x = fst (maximumBy (comparing snd) wordCounts) where
+  allWords = concat (map words x)
+  wordCounts = map (\x' -> (head x', length x')) $ group $ sort allWords
+
+-- > coolestWord convo
+-- "Lol"
+
 
 -- DEPRECATED
 -- These exercises appeared in previous versions of the book, but no longer
