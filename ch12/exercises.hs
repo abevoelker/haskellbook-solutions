@@ -64,3 +64,23 @@ mkWord :: String -> Maybe Word'
 mkWord x = if (vowels > consonants) then Nothing else (Just $ Word' x) where
   consonants = fst (countConsonantsVowels x)
   vowels = snd (countConsonantsVowels x)
+
+-- It’s only Natural
+
+data Nat =
+  Zero
+  | Succ Nat
+  deriving (Eq, Show)
+
+natToInteger :: Nat -> Integer
+natToInteger Zero = 0
+natToInteger (Succ x) = 1 + (natToInteger x)
+
+integerToNat :: Integer -> Maybe Nat
+integerToNat x
+  | x < 0     = Nothing
+  | otherwise = Just (go x)
+  where
+    go x'
+      | x' == 0   = Zero
+      | otherwise = Succ (go (x' - 1))
