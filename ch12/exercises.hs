@@ -84,3 +84,105 @@ integerToNat x
     go x'
       | x' == 0   = Zero
       | otherwise = Succ (go (x' - 1))
+
+-- Small library for Maybe
+
+-- 1)
+
+isJust :: Maybe a -> Bool
+isJust Nothing  = False
+isJust (Just _) = True
+
+isNothing :: Maybe a -> Bool
+isNothing Nothing  = True
+isNothing (Just _) = False
+
+-- 2)
+
+mayybee :: b -> (a -> b) -> Maybe a -> b
+mayybee x _ Nothing = x
+mayybee _ f (Just y) = (f y)
+
+-- 3)
+
+fromMaybe :: a -> Maybe a -> a
+fromMaybe x Nothing  = x
+fromMaybe _ (Just y) = y
+
+-- 4)
+
+listToMaybe :: [a] -> Maybe a
+listToMaybe []    = Nothing
+listToMaybe (x:_) = Just x
+
+maybeToList :: Maybe a -> [a]
+maybeToList Nothing  = []
+maybeToList (Just x) = [x]
+
+-- 5)
+
+catMaybes :: [Maybe a] -> [a]
+catMaybes [] = []
+catMaybes (x:xs) = case x of
+  Nothing   -> catMaybes(xs)
+  (Just x') -> x' : catMaybes(xs)
+
+-- 6)
+
+flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe x = if (length $ catMaybes x) == (length x) then Just(catMaybes x) else Nothing
+
+{-
+flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe x = if (fst result) then Nothing else (Just snd result) where
+  go' True  _  = (True, undefined)
+  go' x []     = (x,[])
+  go' x (y:ys) = go' (x, )
+  result = go' (False, [])
+-}
+
+-- Small library for Either
+
+-- 1)
+
+-- initial solution:
+lefts' :: [Either a b] -> [a]
+lefts' []     = []
+lefts' (x:xs) = case x of
+  (Left  x') -> x' : lefts'(xs)
+  (Right x') -> lefts'(xs)
+
+-- rewritten to use foldr:
+leftToList :: Either a b -> [a]
+leftToList (Left a) = [a]
+leftToList _        = []
+
+lefts'' :: [Either a b] -> [a]
+lefts'' = foldr ((++) . leftToList) []
+
+-- 2)
+rightToList :: Either a b -> [b]
+rightToList (Right b) = [b]
+rightToList _        = []
+
+rights' :: [Either a b] -> [b]
+rights' = foldr ((++) . rightToList) []
+
+-- 3)
+partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' x = ((lefts' x), (rights' x))
+
+-- 4)
+eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' f (Right x) = Just (f x)
+eitherMaybe' _ (Left _)  = Nothing
+
+-- 5)
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' f _ (Left x)  = f x
+either' _ g (Right y) = g y
+
+-- 6)
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' _ (Left x) = Nothing
+eitherMaybe'' f (Right y) = Just(f y)
