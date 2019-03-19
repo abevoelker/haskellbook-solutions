@@ -186,3 +186,41 @@ either' _ g (Right y) = g y
 eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
 eitherMaybe'' _ (Left x) = Nothing
 eitherMaybe'' f (Right y) = Just(f y)
+
+-- Write your own iterate and unfoldr
+
+-- 1)
+myIterate :: (a -> a) -> a -> [a]
+myIterate f x = x : myIterate f (f x)
+
+-- 2)
+myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+myUnfoldr f x = case (f x) of
+  Nothing   -> []
+  (Just (x',y')) -> x' : (myUnfoldr f y')
+
+-- 3)
+betterIterate :: (a -> a) -> a -> [a]
+betterIterate f x = myUnfoldr (\x' -> Just(x', (f x'))) x
+
+-- Finally something other than a list!
+
+-- 1)
+
+data BinaryTree a =
+  Leaf
+  | Node (BinaryTree a) a (BinaryTree a)
+  deriving (Eq, Ord, Show)
+
+unfold :: (a -> Maybe (a,b,a)) -> a -> BinaryTree b
+unfold f x = case (f x) of
+  Nothing       -> Leaf
+  Just (x',y,z) -> Node (unfold f x') y (unfold f z)
+
+-- 2)
+
+treeBuild :: Integer -> BinaryTree Integer
+treeBuild x = unfold go 0 where
+  go x'
+    | x' == x   = Nothing
+    | otherwise = Just( (x' + 1, x', x' + 1) )
